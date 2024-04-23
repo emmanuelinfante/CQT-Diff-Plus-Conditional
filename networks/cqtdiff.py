@@ -642,7 +642,7 @@ class Unet_CQT_oct_with_attention(nn.Module):
                 self.freq_encodings.append(AddFreqEncodingRFF(self.bins_per_oct,N_freq_encoding))
             Nin=2*N_freq_encoding+2
         else:
-            Nin=2
+            Nin=4
 
         #Encoder
         self.Ns= self.args.network.Ns
@@ -740,7 +740,7 @@ class Unet_CQT_oct_with_attention(nn.Module):
         self.CQTransform=CQT_nsgt(self.args.network.cqt.num_octs, self.args.network.cqt.bins_per_oct, mode="oct",window=self.win,fs=self.args.exp.sample_rate, audio_len=length, dtype=torch.float32, device=self.device)
 
 
-    def forward(self, inputs, sigma):
+    def forward(self, inputs, noisy_input, sigma):
         """
         Args: 
             inputs (Tensor):  Input signal in time-domsin, shape (B,T)
@@ -751,9 +751,10 @@ class Unet_CQT_oct_with_attention(nn.Module):
         #apply RFF embedding+MLP of the noise level
         sigma = self.embedding(sigma)
 
+        all_inputs=torch.cat((inputs.unsqueeze(1), noisy_input.unsqueeze(1)), dim=1)
         
         #apply CQT to the inputs
-        X_list =self.CQTransform.fwd(inputs.unsqueeze(1))
+        X_list =self.CQTransform.fwd(all_inputs)
         X_list_out=X_list
 
         hs=[]
@@ -891,4 +892,3 @@ class CropConcatBlock(nn.Module):
                                         width_diff: (x2_shape[3] + width_diff)]
         x = torch.cat((down_layer_cropped, x),1)
         return x
-    
