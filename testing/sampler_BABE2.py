@@ -375,7 +375,10 @@ class BlindSampler():
         return score
     
     def get_denoised_estimate(self, x, t_i):
-        x_hat=self.diff_params.denoiser(x, self.model, t_i.unsqueeze(-1))
+
+        #assuming you have here some noisy signal y (take care of the message passing)
+
+        x_hat=self.diff_params.denoiser(x,y, self.model, t_i.unsqueeze(-1))
 
         if self.args.tester.filter_out_cqt_DC_Nyq:
             x_hat=self.model.CQTransform.apply_hpf_DC(x_hat)
@@ -832,4 +835,4 @@ class BlindSampler():
         self.wandb_run.name=self.args.tester.wandb.run_name +os.path.basename(self.args.model_dir)+"_"+self.args.exp.exp_name+"_"+self.wandb_run.id
         #adding the experiment number to the run name, bery important, I hope this does not crash
         self.use_wandb=True
-
+        
