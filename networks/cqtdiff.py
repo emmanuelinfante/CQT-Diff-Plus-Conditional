@@ -39,9 +39,11 @@ class Linear(torch.nn.Module):
             x = x.add_(self.bias.to(x.dtype))
         return x
 
-class ConditionalDiffusion(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel=1, bias=False, dilation=1,
-                 init_mode='kaiming_normal', init_weight=1, init_bias=0):
+class Conv1d(torch.nn.Module):
+    def __init__(self,
+        in_channels, out_channels, kernel=1, bias=False, dilation=1,
+        init_mode='kaiming_normal', init_weight=1, init_bias=0,
+    ):
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
