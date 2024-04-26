@@ -381,24 +381,22 @@ class BlindSampler():
             x_hat=self.model.CQTransform.apply_hpf_DC(x_hat)
         return x_hat
 
-    def get_denoised_estimate_CFG(self, x, t_i):
-        
-        input_cond=torch.cat((x, y), dim=1)
-        x_hat_cond=self.diff_params.denoiser(input_cond, self.model, t_i.unsqueeze(-1))
+    def get_denoised_estimate_CFG(self, x, t_i, y, lambda_cfg):
 
-        input_unconditional=torch.cat((x, y*0), dim=1)
-        x_hat_cond=self.diff_params.denoiser(input_unconditional, self.model, t_i.unsqueeze(-1))
+        input_cond = torch.cat((x, y), dim=1)
+        x_hat_cond = self.diff_params.denoiser(input_cond, self.model, t_i.unsqueeze(-1))
+
+        input_unconditional = torch.cat((x, y*0), dim=1)
+        x_hat_unconditional = self.diff_params.denoiser(input_unconditional, self.model, t_i.unsqueeze(-1))
 
         #implementeding CFG here
         #something like this, check other CFG implementations
-        x_hat=(1+lambda_cfg)*x_hat_cond -lambda_cfg*x_hat_unconditinal
-        
+        x_hat = (1 + lambda_cfg) * x_hat_cond - lambda_cfg * x_hat_unconditional
+
 
         if self.args.tester.filter_out_cqt_DC_Nyq:
-            x_hat=self.model.CQTransform.apply_hpf_DC(x_hat)
+            x_hat = self.model.CQTransform.apply_hpf_DC(x_hat)
         return x_hat
-    
-
 
     def get_score(self,x, y, t_i):
         if y==None:
@@ -850,4 +848,4 @@ class BlindSampler():
         self.wandb_run.name=self.args.tester.wandb.run_name +os.path.basename(self.args.model_dir)+"_"+self.args.exp.exp_name+"_"+self.wandb_run.id
         #adding the experiment number to the run name, bery important, I hope this does not crash
         self.use_wandb=True
-        
+
