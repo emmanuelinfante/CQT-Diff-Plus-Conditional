@@ -66,6 +66,7 @@ class Conv1d(torch.nn.Module):
             noisy = noisy.add_(b.reshape(1, -1, 1))
 
         return clean, noisy
+        
 def loss_function(clean, noisy, model_output, classifier_guidance, lambda_guidance=1.0):
     diff_loss = torch.nn.functional.mse_loss(model_output, clean)
     guidance_loss = torch.nn.functional.mse_loss(model_output, classifier_guidance)
