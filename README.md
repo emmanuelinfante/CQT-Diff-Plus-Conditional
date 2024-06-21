@@ -5,7 +5,7 @@ This repository aims to create a conditional version of the CQT-Diff+ model whil
 
 > E. Moliner, M. Turunen, F. Elvander and V. Välimäki,, "A Diffusion-Based Generative Equalizer for Music Restoration", submitted to DAFx24, Mar, 2022
 
-## News
+## News 🚨
 21/06/2024. I will resume the project and seek to optimize the model's architecture to the maximum so that it can be trained on less resource-intensive equipment.
 
 ![](manuscript/figures/hawaii-trend.png)
